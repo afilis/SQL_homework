@@ -29,7 +29,7 @@ select distinct district from address where district like 'K%a' and position(' '
 --Платежи нужно отсортировать по дате платежа.
 
 
-select * from payment where payment_date between '2007-03-17' and '2007-03-19' and amount > 1.00 order by payment_date;
+select * from payment where payment_date::date between '2007-03-17' and '2007-03-19' and amount > 1.00 order by payment_date;
 
 
 --ЗАДАНИЕ №4
