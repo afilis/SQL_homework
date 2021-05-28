@@ -23,12 +23,10 @@ join country c3 using(country_id)
 --С помощью SQL-запроса посчитайте для каждого магазина количество его покупателей.
 
 
-select s.store_id as "ID магазина",
-	count(distinct p.customer_id) as "Количество покупателей"
-from store s 
-join staff s2 using(store_id)
-join payment p using(staff_id)
-group by s.store_id
+select c.store_id as "ID магазина",
+	count(c.customer_id) as "Количество покупателей"
+from customer c
+group by c.store_id
 
 
 --Доработайте запрос и выведите только те магазины, 
@@ -37,35 +35,28 @@ group by s.store_id
 --с использованием функции агрегации.
 
 
-select s.store_id as "ID магазина",
-	count(distinct p.customer_id) as "Количество покупателей"
-from store s 
-join staff s2 using(store_id)
-join payment p using(staff_id)
-group by s.store_id
-having count(distinct p.customer_id) >= 300
+select c.store_id as "ID магазина",
+	count(c.customer_id) as "Количество покупателей"
+from customer c
+group by c.store_id
+having count(c.customer_id) >= 300
 
 
 -- Доработайте запрос, добавив в него информацию о городе магазина, 
 --а также фамилию и имя продавца, который работает в этом магазине.
 
 
-select rq.store_id as "ID магазина",
-	rq.customer_count as "Количество покупателей",
-	c.city as "Город",
-	concat(s3.last_name, ' ', s3.first_name) as "Фамилия и имя продавца"
-from
-(select s.store_id as store_id,
-	count(distinct p.customer_id) as customer_count,
-	s.address_id as address_id
-from store s 
-join staff s2 using(store_id)
-join payment p using(staff_id)
-group by s.store_id
-having count(distinct p.customer_id) >= 300) rq
-join address a using(address_id)
-join city c using(city_id)
-join staff s3 using (store_id)
+select c.store_id as "ID магазина",
+	count(c.customer_id) as "Количество покупателей",
+	c2.city as "Город магазина",
+	concat(s2.last_name, ' ', s2.first_name) as "Фамилия и имя продавца"
+from customer c
+join store s on c.store_id = s.store_id
+join address a on s.address_id = a.address_id
+join city c2 on a.city_id = c2.city_id
+join staff s2 on c.store_id = s2.store_id
+group by c.store_id, c2.city, s2.last_name, s2.first_name
+having count(c.customer_id) >= 300
 
 
 --ЗАДАНИЕ №3
@@ -74,7 +65,7 @@ join staff s3 using (store_id)
 
 
 select concat(c.last_name, ' ', c.first_name) as "Фамилия и имя покупателя",
-	count(distinct i.film_id) as "Количество фильмов"
+	count(i.film_id) as "Количество фильмов"
 from rental r
 join customer c using(customer_id)
 join inventory i using(inventory_id)
@@ -92,14 +83,14 @@ limit 5
 
 
 select concat(c.last_name, ' ', c.first_name) as "Фамилия и имя покупателя",
-	count(distinct i.film_id) as "Количество фильмов",
+	count(i.film_id) as "Количество фильмов",
 	round(sum(p.amount)) as "Общая стоимость платежей",
 	min(p.amount) as "Минимальная стоимость платежа",
 	max(p.amount) as "Максимальная стоимость платежа"
 from payment p
 join rental r using(rental_id, customer_id)
 join inventory i using (inventory_id)
-join customer c using (customer_id) 
+join customer c using (customer_id)
 group by concat(c.last_name, ' ', c.first_name)
 
 
@@ -107,10 +98,10 @@ group by concat(c.last_name, ' ', c.first_name)
 --Используя данные из таблицы городов составьте одним запросом всевозможные пары городов таким образом,
  --чтобы в результате не было пар с одинаковыми названиями городов. 
  --Для решения необходимо использовать декартово произведение.
- 
+
 
 select c.city, c2.city
-from city c 
+from city c
 cross join city c2
 where c.city != c2.city
 
