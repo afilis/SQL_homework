@@ -28,6 +28,8 @@ SET search_path TO public;
  
 --СОЗДАНИЕ ТАБЛИЦЫ ЯЗЫКИ
 
+set search_path to lecture_4_afremov;
+
 create table languages (
 	language_id serial primary key,
 	language_name varchar(25)
