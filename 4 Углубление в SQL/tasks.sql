@@ -32,7 +32,7 @@ set search_path to lecture_4_afremov;
 
 create table languages (
 	language_id serial primary key,
-	language_name varchar(25)
+	language_name varchar(25) not null unique
 );
 
 --ВНЕСЕНИЕ ДАННЫХ В ТАБЛИЦУ ЯЗЫКИ
@@ -44,7 +44,7 @@ values ('English'), ('French'), ('German'), ('Russian'), ('Chinese');
 
 create table ethnoses (
 	ethnos_id serial primary key,
-	ethnos_name varchar(25)
+	ethnos_name varchar(25) not null unique
 );
 
 --ВНЕСЕНИЕ ДАННЫХ В ТАБЛИЦУ НАРОДНОСТИ
@@ -56,7 +56,7 @@ values ('Anglo-Saxons'), ('Frenches'), ('Germans'), ('Russians'), ('Chinese');
 
 create table countries (
 	country_id serial primary key,
-	country_name varchar(25)
+	country_name varchar(25) not null unique
 );
 
 --ВНЕСЕНИЕ ДАННЫХ В ТАБЛИЦУ СТРАНЫ
@@ -67,9 +67,9 @@ values ('UK'), ('France'), ('Belgium'), ('Russia'), ('China');
 --СОЗДАНИЕ ПЕРВОЙ ТАБЛИЦЫ СО СВЯЗЯМИ
 
 create table language_ethnos (
-	language_ethnos_id serial primary key,
-	language_id integer references languages(language_id),
-	ethnos_id integer references ethnoses(ethnos_id)
+	language_id integer references languages,
+	ethnos_id integer references ethnoses,
+	primary key (language_id, ethnos_id)
 );
 
 --ВНЕСЕНИЕ ДАННЫХ В ТАБЛИЦУ СО СВЯЗЯМИ
@@ -84,9 +84,9 @@ values (1, 1), (1, 2), (1, 3),	-- en: as, fr, ger
 --СОЗДАНИЕ ВТОРОЙ ТАБЛИЦЫ СО СВЯЗЯМИ
 
 create table ethnos_country (
-	ethnos_country_id serial primary key,
-	ethnos_id integer references ethnoses(ethnos_id),
-	country_id integer references countries(country_id)
+	ethnos_id integer references ethnoses,
+	country_id integer references countries,
+	primary key (ethnos_id, country_id)
 );
 
 --ВНЕСЕНИЕ ДАННЫХ В ТАБЛИЦУ СО СВЯЗЯМИ
